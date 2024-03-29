@@ -36,7 +36,7 @@ app.get("/assignRepair", (req, res) => {
     res.status(401).send('Unauthorized');
     return;
   }
-  const token = auth[1];
+  const token = "validated";
 
   console.log(`Receive request /assignRepair with parameters: carType: ${carType}, repairType: ${repairType}, customerName: ${customerName}, customerPhoneNumber: ${customerPhoneNumber}`);
 
@@ -86,7 +86,7 @@ app.get("/findRepair", (req, res) => {
     res.status(401).send('Unauthorized');
     return;
   }
-  const token = auth[1];
+  const token = "validated";
 
   console.log(`Receive request /findRepair with parameters: customerName: ${customerName}`);
 
@@ -111,18 +111,16 @@ app.get("/findRepair", (req, res) => {
 
 function findRepairByCustomerName(customerName, token) {
   let result;
-  const apiKey = getNameFromToken(token);
   for (let id in memoryStorage) {
     if (memoryStorage[id].customerName === customerName) {
       result = memoryStorage[id];
     }
   }
-  result.apiKey = apiKey;
+  result.apiKey = token;
   return result;
 }
 
 function generateRandomMockResult(id, carType, repairType, customerName, customerPhoneNumber, token) {
-  const apiKey = getApiKeyFromToken(token);
   return {
     id: id,
     title:
@@ -136,12 +134,8 @@ function generateRandomMockResult(id, carType, repairType, customerName, custome
     customerPhoneNumber: customerPhoneNumber,
     date: new Date().toString(),
     image: imageUrls[id % imageUrls.length],
-    apiKey: apiKey,
+    apiKey: token,
   };
-}
-
-function getApiKeyFromToken(token) {
-  return token;
 }
 
 app.listen(port, () => {
