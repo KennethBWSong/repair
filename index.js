@@ -25,7 +25,18 @@ app.get("/assignRepair", (req, res) => {
   const repairType = req.query.repairType;
   const customerName = req.query.customerName;
   const customerPhoneNumber = req.query.customerPhoneNumber;
-  const token = req.headers.authorization.split(' ')[1];
+
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    res.status(401).send('Unauthorized');
+    return;
+  }
+  const auth = authHeader.split(' ');
+  if (auth.length !== 2 || auth[0] !== 'Bearer') {
+    res.status(401).send('Unauthorized');
+    return;
+  }
+  const token = auth[1];
 
   console.log(`Receive request /assignRepair with parameters: carType: ${carType}, repairType: ${repairType}, customerName: ${customerName}, customerPhoneNumber: ${customerPhoneNumber}`);
 
@@ -65,6 +76,17 @@ app.get("/payRepair", (req, res) => {
 
 app.get("/findRepair", (req, res) => {
   const customerName = req.query.customerName;
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    res.status(401).send('Unauthorized');
+    return;
+  }
+  const auth = authHeader.split(' ');
+  if (auth.length !== 2 || auth[0] !== 'Bearer') {
+    res.status(401).send('Unauthorized');
+    return;
+  }
+  const token = auth[1];
 
   console.log(`Receive request /findRepair with parameters: customerName: ${customerName}`);
 
